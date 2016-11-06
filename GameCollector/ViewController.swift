@@ -8,18 +8,46 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+  
+  var gamesArray : [Game] = []
+  
+  @IBOutlet weak var tableView: UITableView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+
+    tableView.delegate = self // поставляем все сами для таблицы
+    tableView.dataSource = self
+    
   }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+  
+  override func viewWillAppear(_ animated: Bool) {
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    do {
+    gamesArray = try context.fetch(Game.fetchRequest())
+      tableView.reloadData()
+      print(gamesArray)
+    } catch {
+      
+    }
   }
-
-
+  
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return gamesArray.count
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = UITableViewCell()
+    let game = gamesArray[indexPath.row]
+    cell.textLabel?.text = game.title
+    cell.imageView?.image = UIImage(data: game.image as! Data)
+    return cell
+  }
+  
 }
 
