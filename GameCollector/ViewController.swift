@@ -29,7 +29,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       tableView.reloadData()
       print(gamesArray)
     } catch {
-      
+      print(error.localizedDescription)
     }
   }
   
@@ -49,5 +49,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     return cell
   }
   
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let game = gamesArray[indexPath.row]
+    performSegue(withIdentifier: "gameSegue", sender: game)
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    let dvc = segue.destination as! GameViewController
+    dvc.game = sender as? Game
+  }
 }
 
